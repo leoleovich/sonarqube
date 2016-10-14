@@ -85,4 +85,9 @@ public interface UserMapper {
   void deletePropertiesMatchingLogin(@Param("propertyKeys") List<String> propertyKeys, @Param("login") String login);
 
   void deactivateUser(@Param("id") long userId, @Param("now") long now);
+
+  int updateRootUser(@Param("login") String login, @Param("defaultOrganizationUuid") String defaultOrganizationUuid, @Param("now") long now);
+
+  int updateNonRootUser(@Param("login") String login, @Param("defaultOrganizationUuid") String defaultOrganizationUuid, @Param("now") long now);
+
 }
