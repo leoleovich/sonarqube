@@ -61,7 +61,6 @@ import org.sonarqube.ws.MediaTypes;
 import org.sonarqube.ws.client.issue.IssueFilterParameters;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.sonar.api.utils.DateUtils.parseDateTime;
 import static org.sonar.core.util.Uuids.UUID_EXAMPLE_01;
@@ -656,7 +655,7 @@ public class SearchActionComponentsMediumTest {
     // TODO correctly feed default organization. Not a problem as long as issues search does not support "anyone"
     // for each organization
     GroupPermissionChange permissionChange = new GroupPermissionChange(PermissionChange.Operation.ADD, permission, new ProjectId(project), GroupIdOrAnyone.forAnyone("TODO"));
-    tester.get(PermissionUpdater.class).apply(session, asList(permissionChange));
+    tester.get(PermissionUpdater.class).apply(session, permissionChange);
   }
 
   private IssueDto insertIssue(IssueDto issue) {

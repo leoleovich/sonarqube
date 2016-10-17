@@ -57,7 +57,6 @@ import org.sonar.server.usergroups.ws.GroupIdOrAnyone;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
@@ -102,7 +101,7 @@ public class IssueBulkChangeServiceMediumTest {
     // TODO correctly feed default organization. Not a problem as long as issues search does not support "anyone"
     // for each organization
     GroupPermissionChange permissionChange = new GroupPermissionChange(PermissionChange.Operation.ADD, UserRole.USER, new ProjectId(project), GroupIdOrAnyone.forAnyone("TODO"));
-    tester.get(PermissionUpdater.class).apply(session, asList(permissionChange));
+    tester.get(PermissionUpdater.class).apply(session, permissionChange);
 
     userSession = userSessionRule.login("john")
       .addProjectPermissions(UserRole.USER, project.key());

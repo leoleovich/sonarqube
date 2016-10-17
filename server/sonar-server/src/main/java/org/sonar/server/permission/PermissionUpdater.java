@@ -19,10 +19,7 @@
  */
 package org.sonar.server.permission;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 import org.sonar.db.DbClient;
 import org.sonar.db.DbSession;
 import org.sonar.server.issue.index.IssueAuthorizationIndexer;
@@ -47,21 +44,15 @@ public class PermissionUpdater {
     this.groupPermissionChanger = groupPermissionChanger;
   }
 
-  public void apply(DbSession dbSession, Collection<PermissionChange> changes) {
-    Set<Long> projectIds = new HashSet<>();
-    for (PermissionChange change : changes) {
-      boolean changed = doApply(dbSession, change);
-      Optional<ProjectId> projectId = change.getProjectId();
-      if (changed && projectId.isPresent()) {
-        projectIds.add(projectId.get().getId());
-      }
-    }
-    for (Long projectId : projectIds) {
-      dbClient.resourceDao().updateAuthorizationDate(projectId, dbSession);
+  public void apply(DbSession dbSession, PermissionChange change) {
+    boolean changed = doApply(dbSession, change);
+    dbSession.commit();
+    Optional<ProjectId> projectId = change.getProjectId();
+    if (changed && projectId.isPresent()) {
+      dbClient.resourceDao().updateAuthorizationDate(projectId.get().getId(), dbSession);
     }
     dbSession.commit();
-
-    if (!projectIds.isEmpty()) {
+    if (changed && projectId.isPresent()) {
       issueAuthorizationIndexer.index();
     }
   }
@@ -74,6 +65,5 @@ public class PermissionUpdater {
       return groupPermissionChanger.apply(dbSession, (GroupPermissionChange) change);
     }
     throw new UnsupportedOperationException("Unsupported permission change: " + change.getClass());
-
   }
 }
