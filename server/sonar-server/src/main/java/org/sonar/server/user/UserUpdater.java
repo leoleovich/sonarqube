@@ -90,7 +90,10 @@ public class UserUpdater {
   public boolean create(NewUser newUser) {
     DbSession dbSession = dbClient.openSession(false);
     try {
-      return create(dbSession, newUser);
+      boolean isUserReactivated = create(dbSession, newUser);
+      dbClient.userDao().updateRootFlagFromPermissions(dbSession, newUser.login(), defaultOrganizationProvider.get().getUuid());
+      dbSession.commit();
+      return isUserReactivated;
     } finally {
       dbClient.closeSession(dbSession);
     }
