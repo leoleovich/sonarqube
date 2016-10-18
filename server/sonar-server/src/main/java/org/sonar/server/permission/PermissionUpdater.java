@@ -32,14 +32,14 @@ import org.sonar.server.permission.index.AuthorizationIndexer;
 public class PermissionUpdater {
 
   private final DbClient dbClient;
-  private final AuthorizationIndexer issueAuthorizationIndexer;
+  private final AuthorizationIndexer authorizationIndexer;
   private final UserPermissionChanger userPermissionChanger;
   private final GroupPermissionChanger groupPermissionChanger;
 
-  public PermissionUpdater(DbClient dbClient, AuthorizationIndexer issueAuthorizationIndexer,
+  public PermissionUpdater(DbClient dbClient, AuthorizationIndexer authorizationIndexer,
     UserPermissionChanger userPermissionChanger, GroupPermissionChanger groupPermissionChanger) {
     this.dbClient = dbClient;
-    this.issueAuthorizationIndexer = issueAuthorizationIndexer;
+    this.authorizationIndexer = authorizationIndexer;
     this.userPermissionChanger = userPermissionChanger;
     this.groupPermissionChanger = groupPermissionChanger;
   }
@@ -53,7 +53,7 @@ public class PermissionUpdater {
     }
     dbSession.commit();
     if (changed && projectId.isPresent()) {
-      issueAuthorizationIndexer.index();
+      authorizationIndexer.index(projectId.get().getUuid());
     }
   }
 
