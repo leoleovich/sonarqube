@@ -18,30 +18,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import React from 'react';
-import PageHeaderContainer from './PageHeaderContainer';
-import ProjectsListContainer from './ProjectsListContainer';
-import '../styles.css';
+import Level from '../../../components/ui/Level';
 
-export default class App extends React.Component {
+export default class ProjectCardQualityGate extends React.Component {
   static propTypes = {
-    fetchProjects: React.PropTypes.func.isRequired
+    status: React.PropTypes.string
   };
 
-  componentDidMount () {
-    document.querySelector('html').classList.add('dashboard-page');
-    this.props.fetchProjects();
-  }
-
-  componentWillUnmount () {
-    document.querySelector('html').classList.remove('dashboard-page');
-  }
-
   render () {
-    return (
-        <div id="projects-page">
-          <PageHeaderContainer/>
-          <ProjectsListContainer/>
-        </div>
-    );
+    const { status } = this.props;
+
+    if (!status) {
+      return null;
+    }
+
+    return <Level level={status}/>;
   }
 }

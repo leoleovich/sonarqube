@@ -31,16 +31,18 @@ export default class PageHeader extends React.Component {
     return (
         <header className="page-head">
           <div className="page page-limited">
-            <h1 className="page-title">Projects</h1>
+            <div className="projects-list-wrapper">
+              <h1 className="page-title">Projects</h1>
 
-            {!!loading && (
-                <i className="spinner"/>
-            )}
-
-            <div className="page-actions">
-              {total != null && (
-                  <span><strong>{total}</strong> projects</span>
+              {!!loading && (
+                  <i className="spinner"/>
               )}
+
+              <div className="page-actions">
+                {total != null && (
+                    <span><strong>{total}</strong> projects</span>
+                )}
+              </div>
             </div>
           </div>
         </header>

@@ -18,30 +18,30 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import React from 'react';
-import PageHeaderContainer from './PageHeaderContainer';
-import ProjectsListContainer from './ProjectsListContainer';
-import '../styles.css';
+import { DonutChart } from '../charts/donut-chart';
 
-export default class App extends React.Component {
+export default class CoverageRating extends React.Component {
   static propTypes = {
-    fetchProjects: React.PropTypes.func.isRequired
+    value: React.PropTypes.oneOfType([React.PropTypes.number, React.PropTypes.string])
   };
 
-  componentDidMount () {
-    document.querySelector('html').classList.add('dashboard-page');
-    this.props.fetchProjects();
-  }
-
-  componentWillUnmount () {
-    document.querySelector('html').classList.remove('dashboard-page');
-  }
-
   render () {
+    let data = [{ value: 100, fill: '#ccc ' }];
+
+    if (this.props.value != null) {
+      const value = Number(this.props.value);
+      data = [
+        { value, fill: '#85bb43' },
+        { value: 100 - value, fill: '#d4333f' }
+      ];
+    }
+
     return (
-        <div id="projects-page">
-          <PageHeaderContainer/>
-          <ProjectsListContainer/>
-        </div>
+        <DonutChart
+            data={data}
+            width={24}
+            height={24}
+            thickness={3}/>
     );
   }
 }

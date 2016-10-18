@@ -21,6 +21,7 @@ import { combineReducers } from 'redux';
 import components, * as fromComponents from './components/reducer';
 import users, * as fromUsers from './users/reducer';
 import favorites, * as fromFavorites from './favorites/reducer';
+import languages, * as fromlanguages from './languages/reducer';
 import measures, * as fromMeasures from './measures/reducer';
 
 import issuesActivity, * as fromIssuesActivity from '../../apps/account/home/store/reducer';
@@ -29,6 +30,7 @@ import projectsApp, * as fromProjectsApp from '../../apps/projects/store/reducer
 export default combineReducers({
   components,
   favorites,
+  languages,
   measures,
   users,
 
@@ -39,6 +41,10 @@ export default combineReducers({
 
 export const getComponent = (state, key) => (
     fromComponents.getComponent(state.components, key)
+);
+
+export const getLanguages = (state, key) => (
+    fromlanguages.getLanguages(state.languages, key)
 );
 
 export const getCurrentUser = state => (

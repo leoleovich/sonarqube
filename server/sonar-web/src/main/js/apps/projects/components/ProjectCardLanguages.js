@@ -18,30 +18,37 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import React from 'react';
-import PageHeaderContainer from './PageHeaderContainer';
-import ProjectsListContainer from './ProjectsListContainer';
-import '../styles.css';
+import sortBy from 'lodash/sortBy';
+import { connect } from 'react-redux';
+import { getLanguages } from '../../../app/store/rootReducer';
 
-export default class App extends React.Component {
-  static propTypes = {
-    fetchProjects: React.PropTypes.func.isRequired
-  };
-
-  componentDidMount () {
-    document.querySelector('html').classList.add('dashboard-page');
-    this.props.fetchProjects();
-  }
-
-  componentWillUnmount () {
-    document.querySelector('html').classList.remove('dashboard-page');
+class ProjectCardLanguages extends React.Component {
+  getLanguageName (key) {
+    if (key === '<null>') {
+      return 'Unknown';
+    }
+    const language = this.props.languages[key];
+    return language != null ? language.name : key;
   }
 
   render () {
-    return (
-        <div id="projects-page">
-          <PageHeaderContainer/>
-          <ProjectsListContainer/>
-        </div>
-    );
+    const { distribution } = this.props;
+
+    if (distribution == null) {
+      return null;
+    }
+
+    const parsedLanguages = distribution.split(';').map(item => item.split('='));
+    const finalLanguages = sortBy(parsedLanguages, l => -1 * Number(l[1]))
+        .slice(0, 2)
+        .map(l => this.getLanguageName(l[0]));
+
+    return <span>{finalLanguages.join(', ')}</span>;
   }
 }
+
+const mapStateToProps = state => ({
+  languages: getLanguages(state)
+});
+
+export default connect(mapStateToProps)(ProjectCardLanguages);

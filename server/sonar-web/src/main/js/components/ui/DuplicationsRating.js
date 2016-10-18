@@ -18,30 +18,25 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import React from 'react';
-import PageHeaderContainer from './PageHeaderContainer';
-import ProjectsListContainer from './ProjectsListContainer';
-import '../styles.css';
+import { match, when } from 'match-when';
+import './DuplicationsRating.css';
 
-export default class App extends React.Component {
+export default class DuplicationsRating extends React.Component {
   static propTypes = {
-    fetchProjects: React.PropTypes.func.isRequired
+    value: React.PropTypes.oneOfType([React.PropTypes.number, React.PropTypes.string]).isRequired
   };
 
-  componentDidMount () {
-    document.querySelector('html').classList.add('dashboard-page');
-    this.props.fetchProjects();
-  }
-
-  componentWillUnmount () {
-    document.querySelector('html').classList.remove('dashboard-page');
-  }
-
   render () {
+    const className = match({
+      [when.range(0, 3)]: 'duplications-rating-A',
+      [when.range(3, 5)]: 'duplications-rating-B',
+      [when.range(5, 10)]: 'duplications-rating-C',
+      [when.range(10, 20)]: 'duplications-rating-D',
+      [when()]: 'duplications-rating-E'
+    })(Number(this.props.value));
+
     return (
-        <div id="projects-page">
-          <PageHeaderContainer/>
-          <ProjectsListContainer/>
-        </div>
+        <div className={'duplications-rating ' + className}/>
     );
   }
 }

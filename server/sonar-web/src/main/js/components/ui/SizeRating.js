@@ -18,30 +18,31 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import React from 'react';
-import PageHeaderContainer from './PageHeaderContainer';
-import ProjectsListContainer from './ProjectsListContainer';
-import '../styles.css';
+import { match, when } from 'match-when';
+import './SizeRating.css';
 
-export default class App extends React.Component {
+export default class SizeRating extends React.Component {
   static propTypes = {
-    fetchProjects: React.PropTypes.func.isRequired
+    value: React.PropTypes.oneOfType([React.PropTypes.number, React.PropTypes.string])
   };
 
-  componentDidMount () {
-    document.querySelector('html').classList.add('dashboard-page');
-    this.props.fetchProjects();
-  }
-
-  componentWillUnmount () {
-    document.querySelector('html').classList.remove('dashboard-page');
-  }
-
   render () {
+    if (this.props.value == null) {
+      return (
+          <div className="size-rating size-rating-muted">&nbsp;</div>
+      );
+    }
+
+    const letter = match({
+      [when.range(0, 999)]: 'XS',
+      [when.range(1000, 9999)]: 'S',
+      [when.range(10000, 99999)]: 'M',
+      [when.range(100000, 500000)]: 'L',
+      [when()]: 'XL'
+    })(Number(this.props.value));
+
     return (
-        <div id="projects-page">
-          <PageHeaderContainer/>
-          <ProjectsListContainer/>
-        </div>
+        <div className="size-rating">{letter}</div>
     );
   }
 }

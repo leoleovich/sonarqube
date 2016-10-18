@@ -17,6 +17,8 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+import groupBy from 'lodash/groupBy';
+import keyBy from 'lodash/keyBy';
 import { searchProjects } from '../../../api/components';
 import { addGlobalErrorMessage } from '../../../components/store/globalMessages';
 import { parseError } from '../../code/utils';
@@ -24,31 +26,67 @@ import { receiveComponents } from '../../../app/store/components/actions';
 import { receiveProjects, receiveMoreProjects } from './projects/actions';
 import { updateState } from './state/actions';
 import { getProjectsAppState } from '../../../app/store/rootReducer';
+import { getMeasuresForComponents } from '../../../api/measures';
+import { receiveComponentMeasures } from '../../../app/store/measures/actions';
 
 const PAGE_SIZE = 100;
+
+const METRICS = [
+  'alert_status',
+  'reliability_rating',
+  'bugs',
+  'security_rating',
+  'vulnerabilities',
+  'sqale_rating',
+  'sqale_index',
+  'duplicated_lines_density',
+  'coverage',
+  'ncloc',
+  'ncloc_language_distribution'
+];
 
 const onFail = dispatch => error => {
   parseError(error).then(message => dispatch(addGlobalErrorMessage(message)));
   dispatch(updateState({ loading: false }));
 };
 
+const onReceiveMeasures = dispatch => projects => response => {
+  const projectsById = keyBy(projects, 'id');
+  const byComponentId = groupBy(response.measures, 'component');
+  Object.keys(byComponentId).forEach(componentId => {
+    const componentKey = projectsById[componentId].key;
+    const measures = {};
+    byComponentId[componentId].forEach(measure => {
+      measures[measure.metric] = measure.value;
+    });
+    dispatch(receiveComponentMeasures(componentKey, measures));
+  });
+};
+
+const fetchProjectMeasures = projects => dispatch => {
+  const projectKeys = projects.map(project => project.key);
+  return getMeasuresForComponents(projectKeys, METRICS).then(onReceiveMeasures(dispatch)(projects), onFail(dispatch));
+};
+
 const onReceiveProjects = dispatch => response => {
   dispatch(receiveComponents(response.components));
   dispatch(receiveProjects(response.components));
+  dispatch(fetchProjectMeasures(response.components)).then(() => {
+    dispatch(updateState({ loading: false }));
+  });
   dispatch(updateState({
     total: response.paging.total,
     pageIndex: response.paging.pageIndex,
-    loading: false
   }));
 };
 
 const onReceiveMoreProjects = dispatch => response => {
   dispatch(receiveComponents(response.components));
   dispatch(receiveMoreProjects(response.components));
-  dispatch(updateState({
-    pageIndex: response.paging.pageIndex,
-    loading: false
-  }));
+  dispatch(fetchProjectMeasures(response.components)).then(() => {
+    dispatch(updateState({ loading: false }));
+  });
+  dispatch(updateState({ pageIndex: response.paging.pageIndex }));
 };
 
 export const fetchProjects = () => dispatch => {
