@@ -17,19 +17,28 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-export const RECEIVE_COMPONENT_MEASURE = 'RECEIVE_COMPONENT_MEASURE';
+import React from 'react';
+import { getComponentUrl } from '../../../helpers/urls';
 
-export const receiveComponentMeasure = (componentKey, metricKey, value) => ({
-  type: RECEIVE_COMPONENT_MEASURE,
-  componentKey,
-  metricKey,
-  value
-});
+export default class ProjectCard extends React.Component {
+  static propTypes = {
+    project: React.PropTypes.object,
+    qualityGate: React.PropTypes.string
+  };
 
-export const RECEIVE_COMPONENT_MEASURES = 'RECEIVE_COMPONENT_MEASURES';
+  render () {
+    const { project } = this.props;
 
-export const receiveComponentMeasures = (componentKey, measures) => ({
-  type: RECEIVE_COMPONENT_MEASURES,
-  componentKey,
-  measures
-});
+    if (project == null) {
+      return null;
+    }
+
+    return (
+        <li className="project-card">
+          <h2 className="project-card-name">
+            <a className="link-base-color" href={getComponentUrl(project.key)}>{project.name}</a>
+          </h2>
+        </li>
+    );
+  }
+}

@@ -17,19 +17,26 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-export const RECEIVE_COMPONENT_MEASURE = 'RECEIVE_COMPONENT_MEASURE';
+import { connect } from 'react-redux';
+import { getProjects, getProjectsAppState } from '../../../app/store/rootReducer';
+import ListFooter from '../../../components/controls/ListFooter';
+import { fetchMoreProjects } from '../store/actions';
 
-export const receiveComponentMeasure = (componentKey, metricKey, value) => ({
-  type: RECEIVE_COMPONENT_MEASURE,
-  componentKey,
-  metricKey,
-  value
+const mapStateToProps = state => {
+  const projects = getProjects(state);
+  const appState = getProjectsAppState(state);
+  return {
+    count: projects != null ? projects.length : 0,
+    total: appState.total != null ? appState.total : 0,
+    ready: !appState.loading
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  loadMore: () => dispatch(fetchMoreProjects())
 });
 
-export const RECEIVE_COMPONENT_MEASURES = 'RECEIVE_COMPONENT_MEASURES';
-
-export const receiveComponentMeasures = (componentKey, measures) => ({
-  type: RECEIVE_COMPONENT_MEASURES,
-  componentKey,
-  measures
-});
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ListFooter);

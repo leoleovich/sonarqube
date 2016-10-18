@@ -17,36 +17,14 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-import { RECEIVE_COMPONENT_MEASURE, RECEIVE_COMPONENT_MEASURES } from './actions';
-
-const byMetricKey = (state = {}, action = {}) => {
-  if (action.type === RECEIVE_COMPONENT_MEASURE) {
-    return { ...state, [action.metricKey]: action.value };
-  }
-
-  if (action.type === RECEIVE_COMPONENT_MEASURES) {
-    return { ...state, ...action.measures };
-  }
-
-  return state;
-};
+import { UPDATE_STATE } from './actions';
 
 const reducer = (state = {}, action = {}) => {
-  if (action.type === RECEIVE_COMPONENT_MEASURE || action.type === RECEIVE_COMPONENT_MEASURES) {
-    const component = state[action.componentKey];
-    return { ...state, [action.componentKey]: byMetricKey(component, action) };
+  if (action.type === UPDATE_STATE) {
+    return { ...state, ...action.changes };
   }
 
   return state;
 };
 
 export default reducer;
-
-export const getComponentMeasure = (state, componentKey, metricKey) => {
-  const component = state[componentKey];
-  return component && component[metricKey];
-};
-
-export const getComponentMeasures = (state, componentKey) => (
-    state[componentKey]
-);

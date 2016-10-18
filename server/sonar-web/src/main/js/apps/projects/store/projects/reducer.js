@@ -17,24 +17,16 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-import { RECEIVE_COMPONENT_MEASURE, RECEIVE_COMPONENT_MEASURES } from './actions';
+import { RECEIVE_PROJECTS, RECEIVE_MORE_PROJECTS } from './actions';
 
-const byMetricKey = (state = {}, action = {}) => {
-  if (action.type === RECEIVE_COMPONENT_MEASURE) {
-    return { ...state, [action.metricKey]: action.value };
+const reducer = (state = null, action = {}) => {
+  if (action.type === RECEIVE_PROJECTS) {
+    return action.projects.map(project => project.key);
   }
 
-  if (action.type === RECEIVE_COMPONENT_MEASURES) {
-    return { ...state, ...action.measures };
-  }
-
-  return state;
-};
-
-const reducer = (state = {}, action = {}) => {
-  if (action.type === RECEIVE_COMPONENT_MEASURE || action.type === RECEIVE_COMPONENT_MEASURES) {
-    const component = state[action.componentKey];
-    return { ...state, [action.componentKey]: byMetricKey(component, action) };
+  if (action.type === RECEIVE_MORE_PROJECTS) {
+    const keys = action.projects.map(project => project.key);
+    return state != null ? [...state, ...keys] : keys;
   }
 
   return state;
@@ -42,11 +34,4 @@ const reducer = (state = {}, action = {}) => {
 
 export default reducer;
 
-export const getComponentMeasure = (state, componentKey, metricKey) => {
-  const component = state[componentKey];
-  return component && component[metricKey];
-};
-
-export const getComponentMeasures = (state, componentKey) => (
-    state[componentKey]
-);
+export const getProjects = state => state;

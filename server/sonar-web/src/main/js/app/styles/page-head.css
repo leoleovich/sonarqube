@@ -1,0 +1,13 @@
+.page-head {
+  border-bottom: 1px solid #e6e6e6;
+  background-color: #f3f3f3;
+}
+
+.page-head .page-actions {
+  margin-bottom: 0;
+}
+
+.page-head .spinner {
+  top: 4px;
+  margin-left: 8px;
+}

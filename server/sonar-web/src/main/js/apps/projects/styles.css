@@ -1,0 +1,17 @@
+.projects-list-wrapper {
+  padding-left: 300px;
+}
+
+.projects-list {
+  margin-top: -20px;
+}
+
+.project-card {
+  padding-top: 30px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.project-card-name {
+  font-weight: 600;
+}

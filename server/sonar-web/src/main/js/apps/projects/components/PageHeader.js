@@ -17,19 +17,33 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-export const RECEIVE_COMPONENT_MEASURE = 'RECEIVE_COMPONENT_MEASURE';
+import React from 'react';
 
-export const receiveComponentMeasure = (componentKey, metricKey, value) => ({
-  type: RECEIVE_COMPONENT_MEASURE,
-  componentKey,
-  metricKey,
-  value
-});
+export default class PageHeader extends React.Component {
+  static propTypes = {
+    total: React.PropTypes.number,
+    loading: React.PropTypes.bool
+  };
 
-export const RECEIVE_COMPONENT_MEASURES = 'RECEIVE_COMPONENT_MEASURES';
+  render () {
+    const { total, loading } = this.props;
 
-export const receiveComponentMeasures = (componentKey, measures) => ({
-  type: RECEIVE_COMPONENT_MEASURES,
-  componentKey,
-  measures
-});
+    return (
+        <header className="page-head">
+          <div className="page page-limited">
+            <h1 className="page-title">Projects</h1>
+
+            {!!loading && (
+                <i className="spinner"/>
+            )}
+
+            <div className="page-actions">
+              {total != null && (
+                  <span><strong>{total}</strong> projects</span>
+              )}
+            </div>
+          </div>
+        </header>
+    );
+  }
+}

@@ -17,36 +17,31 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-import { RECEIVE_COMPONENT_MEASURE, RECEIVE_COMPONENT_MEASURES } from './actions';
+import { combineReducers } from 'redux';
+import keyBy from 'lodash/keyBy';
+import uniq from 'lodash/uniq';
+import { RECEIVE_COMPONENTS } from './actions';
 
-const byMetricKey = (state = {}, action = {}) => {
-  if (action.type === RECEIVE_COMPONENT_MEASURE) {
-    return { ...state, [action.metricKey]: action.value };
-  }
-
-  if (action.type === RECEIVE_COMPONENT_MEASURES) {
-    return { ...state, ...action.measures };
-  }
-
-  return state;
-};
-
-const reducer = (state = {}, action = {}) => {
-  if (action.type === RECEIVE_COMPONENT_MEASURE || action.type === RECEIVE_COMPONENT_MEASURES) {
-    const component = state[action.componentKey];
-    return { ...state, [action.componentKey]: byMetricKey(component, action) };
+const byKey = (state = {}, action = {}) => {
+  if (action.type === RECEIVE_COMPONENTS) {
+    const changes = keyBy(action.components, 'key');
+    return { ...state, ...changes };
   }
 
   return state;
 };
 
-export default reducer;
+const keys = (state = [], action = {}) => {
+  if (action.type === RECEIVE_COMPONENTS) {
+    const changes = action.components.map(f => f.key);
+    return uniq([...state, ...changes]);
+  }
 
-export const getComponentMeasure = (state, componentKey, metricKey) => {
-  const component = state[componentKey];
-  return component && component[metricKey];
+  return state;
 };
 
-export const getComponentMeasures = (state, componentKey) => (
-    state[componentKey]
+export default combineReducers({ byKey, keys });
+
+export const getComponent = (state, key) => (
+    state.byKey[key]
 );

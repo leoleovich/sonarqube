@@ -17,19 +17,33 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-export const RECEIVE_COMPONENT_MEASURE = 'RECEIVE_COMPONENT_MEASURE';
+import React from 'react';
+import ProjectCardContainer from './ProjectCardContainer';
+import ProjectsListFooterContainer from './ProjectsListFooterContainer';
 
-export const receiveComponentMeasure = (componentKey, metricKey, value) => ({
-  type: RECEIVE_COMPONENT_MEASURE,
-  componentKey,
-  metricKey,
-  value
-});
+export default class ProjectsList extends React.Component {
+  static propTypes = {
+    projects: React.PropTypes.arrayOf(React.PropTypes.string)
+  };
 
-export const RECEIVE_COMPONENT_MEASURES = 'RECEIVE_COMPONENT_MEASURES';
+  render () {
+    const { projects } = this.props;
 
-export const receiveComponentMeasures = (componentKey, measures) => ({
-  type: RECEIVE_COMPONENT_MEASURES,
-  componentKey,
-  measures
-});
+    if (projects == null) {
+      return null;
+    }
+
+    return (
+        <div className="page page-limited">
+          <div className="projects-list-wrapper">
+            <ul className="projects-list">
+              {projects.map(projectKey => (
+                  <ProjectCardContainer key={projectKey} projectKey={projectKey}/>
+              ))}
+            </ul>
+            <ProjectsListFooterContainer/>
+          </div>
+        </div>
+    );
+  }
+}

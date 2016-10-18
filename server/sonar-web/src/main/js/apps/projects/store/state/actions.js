@@ -17,19 +17,9 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-export const RECEIVE_COMPONENT_MEASURE = 'RECEIVE_COMPONENT_MEASURE';
+export const UPDATE_STATE = 'projects/UPDATE_STATE';
 
-export const receiveComponentMeasure = (componentKey, metricKey, value) => ({
-  type: RECEIVE_COMPONENT_MEASURE,
-  componentKey,
-  metricKey,
-  value
-});
-
-export const RECEIVE_COMPONENT_MEASURES = 'RECEIVE_COMPONENT_MEASURES';
-
-export const receiveComponentMeasures = (componentKey, measures) => ({
-  type: RECEIVE_COMPONENT_MEASURES,
-  componentKey,
-  measures
+export const updateState = changes => ({
+  type: UPDATE_STATE,
+  changes
 });

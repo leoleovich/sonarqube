@@ -17,19 +17,16 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-export const RECEIVE_COMPONENT_MEASURE = 'RECEIVE_COMPONENT_MEASURE';
+export const RECEIVE_PROJECTS = 'projects/RECEIVE_PROJECTS';
 
-export const receiveComponentMeasure = (componentKey, metricKey, value) => ({
-  type: RECEIVE_COMPONENT_MEASURE,
-  componentKey,
-  metricKey,
-  value
+export const receiveProjects = projects => ({
+  type: RECEIVE_PROJECTS,
+  projects
 });
 
-export const RECEIVE_COMPONENT_MEASURES = 'RECEIVE_COMPONENT_MEASURES';
+export const RECEIVE_MORE_PROJECTS = 'projects/RECEIVE_MORE_PROJECTS';
 
-export const receiveComponentMeasures = (componentKey, measures) => ({
-  type: RECEIVE_COMPONENT_MEASURES,
-  componentKey,
-  measures
+export const receiveMoreProjects = projects => ({
+  type: RECEIVE_MORE_PROJECTS,
+  projects
 });
