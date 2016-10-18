@@ -35,7 +35,7 @@ export default class ProjectCard extends React.Component {
     }
 
     return (
-        <li className="boxed-group project-card">
+        <div className="boxed-group project-card">
           <div className="boxed-group-actions">
             <ProjectCardQualityGate status={this.props.measures && this.props.measures['alert_status']}/>
           </div>
@@ -45,7 +45,7 @@ export default class ProjectCard extends React.Component {
           <div className="boxed-group-inner">
             <ProjectCardMeasures measures={this.props.measures}/>
           </div>
-        </li>
+        </div>
     );
   }
 }

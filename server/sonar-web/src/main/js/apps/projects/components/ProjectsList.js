@@ -18,6 +18,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import React from 'react';
+import { List, AutoSizer, WindowScroller } from 'react-virtualized';
 import ProjectCardContainer from './ProjectCardContainer';
 import ProjectsListFooterContainer from './ProjectsListFooterContainer';
 
@@ -33,14 +34,35 @@ export default class ProjectsList extends React.Component {
       return null;
     }
 
+    const rowRenderer = ({ key, index, style }) => {
+      const projectKey = projects[index];
+      return (
+          <div key={key} style={style}>
+            <ProjectCardContainer projectKey={projectKey}/>
+          </div>
+      );
+    };
+
     return (
         <div className="page page-limited">
           <div className="projects-list-wrapper">
-            <ul className="projects-list">
-              {projects.map(projectKey => (
-                  <ProjectCardContainer key={projectKey} projectKey={projectKey}/>
-              ))}
-            </ul>
+            <WindowScroller>
+              {({ height, isScrolling, scrollTop }) => (
+                  <AutoSizer disableHeight>
+                    {({ width }) => (
+                        <List
+                            className="projects-list"
+                            autoHeight
+                            width={width}
+                            height={height}
+                            rowCount={projects.length}
+                            rowHeight={135}
+                            rowRenderer={rowRenderer}
+                            scrollTop={scrollTop}/>
+                    )}
+                  </AutoSizer>
+              )}
+            </WindowScroller>
             <ProjectsListFooterContainer/>
           </div>
         </div>

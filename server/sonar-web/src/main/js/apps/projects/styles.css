@@ -4,10 +4,12 @@
 }
 
 .projects-list {
-
+  outline: none;
 }
 
 .project-card {
+  height: 115px;
+  box-sizing: border-box;
 }
 
 .project-card .level {
