@@ -48,6 +48,10 @@
   content: "";
 }
 
+.project-card-measure.pull-right:before {
+  display: none;
+}
+
 .project-card-measure-rating {
   display: inline-block;
   vertical-align: top;
@@ -62,6 +66,11 @@
   line-height: 23px;
   font-size: 16px;
   font-weight: 400;
+}
+
+.project-card-measure .level {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .project-card-measure-inner {

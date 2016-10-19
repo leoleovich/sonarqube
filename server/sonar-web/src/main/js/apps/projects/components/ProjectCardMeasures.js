@@ -19,6 +19,7 @@
  */
 import React from 'react';
 import ProjectCardLanguages from './ProjectCardLanguages';
+import ProjectCardQualityGate from './ProjectCardQualityGate';
 import Measure from '../../component-measures/components/Measure';
 import Rating from '../../../components/ui/Rating';
 import CoverageRating from '../../../components/ui/CoverageRating';
@@ -78,7 +79,7 @@ export default class ProjectCardMeasures extends React.Component {
             <div className="project-card-measure-inner">
               <div className="project-card-measure-number">
                 {measures['coverage'] != null && (
-                  <span className="spacer-right">
+                    <span className="spacer-right">
                     <CoverageRating value={measures['coverage']}/>
                   </span>
                 )}
@@ -120,6 +121,8 @@ export default class ProjectCardMeasures extends React.Component {
               </div>
             </div>
           </div>
+
+          <ProjectCardQualityGate status={measures['alert_status']}/>
         </div>
     );
   }
