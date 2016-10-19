@@ -78,6 +78,10 @@ public class DeleteAction implements OrganizationsAction {
 
       userSession.checkOrganizationPermission(organizationDto.getUuid(), SYSTEM_ADMIN);
 
+      dbClient.permissionTemplateDao().deleteByOrganization(dbSession, organizationDto.getUuid());
+      dbClient.groupPermissionDao().deleteByOrganization(dbSession, organizationDto.getUuid());
+      dbClient.userPermissionDao().deleteByOrganization(dbSession, organizationDto.getUuid());
+      dbClient.groupDao().deleteByOrganization(dbSession, organizationDto.getUuid());
       dbClient.organizationDao().deleteByKey(dbSession, key);
       dbSession.commit();
 

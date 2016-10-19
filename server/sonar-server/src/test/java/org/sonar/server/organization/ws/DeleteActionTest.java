@@ -153,6 +153,60 @@ public class DeleteActionTest {
     verifyOrganizationDoesNotExist(organization);
   }
 
+  @Test
+  public void request_deletes_specified_organization_including_groups_and_group_permissions() {
+    OrganizationDto organization = dbTester.organizations().insert();
+    GroupDto group = dbTester.users().insertGroup();
+    dbTester.users().insertPermissionOnGroup(group, "foo");
+    dbTester.users().insertPermissionOnAnyone(organization, "bar");
+    userSession.login().setRoot();
+
+    sendRequest(organization);
+
+    assertThat(dbTester.select("select organization_uuid as \"organizationUuid\" from group_roles"))
+      .extracting(row -> (String) row.get("organizationUuid"))
+      .containsOnly(dbTester.getDefaultOrganization().getUuid());
+    verifyOrganizationDoesNotExist(organization);
+  }
+
+  @Test
+  public void request_deletes_specified_organization_including_permission_templates() {
+    OrganizationDto organization = dbTester.organizations().insert();
+    GroupDto group = dbTester.users().insertGroup();
+    UserDto user = dbTester.users().insertUser();
+    PermissionTemplateDto template = dbTester.permissionTemplates().insertTemplate(organization);
+    dbTester.permissionTemplates().addGroupToTemplate(template.getId(), group.getId(), "foo");
+    dbTester.permissionTemplates().addUserToTemplate(template.getId(), user.getId(), "bar");
+    dbTester.permissionTemplates().addProjectCreatorToTemplate(template.getId(), "doh");
+    userSession.login().setRoot();
+    assertThat(dbTester.countRowsOfTable("perm_templates_groups")).isGreaterThan(0);
+    assertThat(dbTester.countRowsOfTable("perm_templates_users")).isGreaterThan(0);
+    assertThat(dbTester.countRowsOfTable("perm_tpl_characteristics")).isGreaterThan(0);
+    assertThat(dbTester.countRowsOfTable("permission_templates")).isGreaterThan(0);
+
+    sendRequest(organization);
+
+    assertThat(dbTester.countRowsOfTable("perm_templates_groups")).isEqualTo(0);
+    assertThat(dbTester.countRowsOfTable("perm_templates_users")).isEqualTo(0);
+    assertThat(dbTester.countRowsOfTable("perm_tpl_characteristics")).isEqualTo(0);
+    assertThat(dbTester.countRowsOfTable("permission_templates")).isEqualTo(0);
+    verifyOrganizationDoesNotExist(organization);
+  }
+
+  @Test
+  public void request_deletes_specified_organization_including_user_permissions() {
+    OrganizationDto organization = dbTester.organizations().insert();
+    UserDto user = dbTester.users().insertUser();
+    dbTester.users().insertPermissionOnUser(organization, user, "bla");
+    userSession.login().setRoot();
+    assertThat(dbTester.countRowsOfTable("user_roles")).isGreaterThan(0);
+
+    sendRequest(organization);
+
+    assertThat(dbTester.countRowsOfTable("user_roles")).isEqualTo(0);
+    verifyOrganizationDoesNotExist(organization);
+  }
+
   private void verifyOrganizationDoesNotExist(OrganizationDto organization) {
     assertThat(dbTester.getDbClient().organizationDao().selectByKey(dbTester.getSession(), organization.getKey()))
       .isEmpty();
