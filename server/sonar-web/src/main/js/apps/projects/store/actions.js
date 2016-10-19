@@ -34,11 +34,8 @@ const PAGE_SIZE = 100;
 const METRICS = [
   'alert_status',
   'reliability_rating',
-  'bugs',
   'security_rating',
-  'vulnerabilities',
   'sqale_rating',
-  'sqale_index',
   'duplicated_lines_density',
   'coverage',
   'ncloc',

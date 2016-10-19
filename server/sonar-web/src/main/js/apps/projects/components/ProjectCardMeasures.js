@@ -42,56 +42,46 @@ export default class ProjectCardMeasures extends React.Component {
     return (
         <div className="project-card-measures">
           <div className="project-card-measure">
-            <div className="project-card-measure-rating">
-              <Rating value={measures['reliability_rating']}/>
-            </div>
             <div className="project-card-measure-inner">
               <div className="project-card-measure-number">
-                <Measure measure={{ value: measures['bugs'] }}
-                         metric={{ key: 'bugs', type: 'SHORT_INT' }}/>
+                <Rating value={measures['reliability_rating']}/>
               </div>
               <div className="project-card-measure-label">
-                {translate('metric.bugs.name')}
+                Reliability
               </div>
             </div>
           </div>
 
           <div className="project-card-measure">
-            <div className="project-card-measure-rating">
-              <Rating value={measures['security_rating']}/>
-            </div>
             <div className="project-card-measure-inner">
               <div className="project-card-measure-number">
-                <Measure measure={{ value: measures['vulnerabilities'] }}
-                         metric={{ key: 'vulnerabilities', type: 'SHORT_INT' }}/>
+                <Rating value={measures['security_rating']}/>
               </div>
               <div className="project-card-measure-label">
-                {translate('metric.vulnerabilities.name')}
+                Security
               </div>
             </div>
           </div>
 
           <div className="project-card-measure">
-            <div className="project-card-measure-rating">
-              <Rating value={measures['sqale_rating']}/>
-            </div>
             <div className="project-card-measure-inner">
               <div className="project-card-measure-number">
-                <Measure measure={{ value: measures['sqale_index'] }}
-                         metric={{ key: 'sqale_index', type: 'SHORT_WORK_DUR' }}/>
+                <Rating value={measures['sqale_rating']}/>
               </div>
               <div className="project-card-measure-label">
-                {translate('metric.sqale_index.name')}
+                Maintainability
               </div>
             </div>
           </div>
 
           <div className="project-card-measure">
-            <div className="project-card-measure-rating">
-              <CoverageRating value={measures['coverage']}/>
-            </div>
             <div className="project-card-measure-inner">
               <div className="project-card-measure-number">
+                {measures['coverage'] != null && (
+                  <span className="spacer-right">
+                    <CoverageRating value={measures['coverage']}/>
+                  </span>
+                )}
                 <Measure measure={{ value: measures['coverage'] }}
                          metric={{ key: 'coverage', type: 'PERCENT' }}/>
               </div>
@@ -102,11 +92,11 @@ export default class ProjectCardMeasures extends React.Component {
           </div>
 
           <div className="project-card-measure">
-            <div className="project-card-measure-rating">
-              <DuplicationsRating value={measures['duplicated_lines_density']}/>
-            </div>
             <div className="project-card-measure-inner">
               <div className="project-card-measure-number">
+                <span className="spacer-right">
+                  <DuplicationsRating value={measures['duplicated_lines_density']}/>
+                </span>
                 <Measure measure={{ value: measures['duplicated_lines_density'] }}
                          metric={{ key: 'duplicated_lines_density', type: 'PERCENT' }}/>
               </div>
@@ -117,11 +107,11 @@ export default class ProjectCardMeasures extends React.Component {
           </div>
 
           <div className="project-card-measure">
-            <div className="project-card-measure-rating">
-              <SizeRating value={measures['ncloc']}/>
-            </div>
             <div className="project-card-measure-inner">
               <div className="project-card-measure-number">
+                <span className="spacer-right">
+                  <SizeRating value={measures['ncloc']}/>
+                </span>
                 <Measure measure={{ value: measures['ncloc'] }}
                          metric={{ key: 'ncloc', type: 'SHORT_INT' }}/>
               </div>

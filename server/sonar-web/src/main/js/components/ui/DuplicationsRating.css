@@ -1,6 +1,7 @@
 .duplications-rating {
   position: relative;
   display: inline-flex;
+  vertical-align: top;
   justify-content: center;
   align-items: center;
   width: 24px;

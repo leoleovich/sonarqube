@@ -25,17 +25,27 @@
 }
 
 .project-card-measures {
-  margin: 0 -10px;
+  margin: 0 -20px;
 }
 
 .project-card-measure {
+  position: relative;
   display: inline-block;
   vertical-align: top;
-  padding: 0 10px;
+  min-width: 85px;
+  padding: 0 20px;
+  text-align: center;
 }
 
-.project-card-measure + .project-card-measure {
+.project-card-measure + .project-card-measure:before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 0;
+  height: 24px;
+  margin-top: -12px;
   border-left: 1px solid #e6e6e6;
+  content: "";
 }
 
 .project-card-measure-rating {
@@ -45,7 +55,7 @@
   padding: 10px 0;
 }
 
-.project-card-measure-rating .rating {
+.project-card-measure .rating {
   width: 24px;
   height: 24px;
   border-radius: 24px;
@@ -57,14 +67,15 @@
 .project-card-measure-inner {
   display: inline-block;
   vertical-align: top;
+  text-align: center;
 }
 
 .project-card-measure-number {
-  line-height: 22px;
+  line-height: 24px;
   font-size: 18px;
 }
 
 .project-card-measure-label {
-  line-height: 22px;
+  margin-top: 4px;
   font-size: 12px;
 }
