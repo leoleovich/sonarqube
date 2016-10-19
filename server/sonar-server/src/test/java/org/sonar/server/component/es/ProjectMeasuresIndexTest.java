@@ -21,9 +21,11 @@ package org.sonar.server.component.es;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
+import javax.annotation.Nullable;
 import org.junit.Rule;
 import org.junit.Test;
 import org.sonar.api.config.MapSettings;
@@ -32,9 +34,13 @@ import org.sonar.server.component.es.ProjectMeasuresQuery.Operator;
 import org.sonar.server.es.EsTester;
 import org.sonar.server.es.SearchIdResult;
 import org.sonar.server.es.SearchOptions;
+import org.sonar.server.permission.index.AuthorizationIndexerTester;
+import org.sonar.server.tester.UserSessionRule;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.sonar.api.security.DefaultGroups.ANYONE;
 import static org.sonar.server.component.es.ProjectMeasuresIndexDefinition.INDEX_PROJECT_MEASURES;
 import static org.sonar.server.component.es.ProjectMeasuresIndexDefinition.TYPE_PROJECT_MEASURES;
 
@@ -42,10 +48,16 @@ public class ProjectMeasuresIndexTest {
 
   private static final String COVERAGE = "coverage";
   private static final String NCLOC = "ncloc";
+
   @Rule
   public EsTester es = new EsTester(new ProjectMeasuresIndexDefinition(new MapSettings()));
 
-  private ProjectMeasuresIndex underTest = new ProjectMeasuresIndex(es.client());
+  @Rule
+  public UserSessionRule userSession = UserSessionRule.standalone();
+
+  AuthorizationIndexerTester authorizationIndexerTester = new AuthorizationIndexerTester(es);
+
+  ProjectMeasuresIndex underTest = new ProjectMeasuresIndex(es.client(), userSession);
 
   @Test
   public void empty_search() {
@@ -118,9 +130,35 @@ public class ProjectMeasuresIndexTest {
     assertThat(result).containsExactly("P2");
   }
 
+  @Test
+  public void return_only_authorized_projects() throws Exception {
+    userSession.login("john").setUserGroups("dev");
+    addDocs("john", null, newDoc("P1", "K1", "Windows"));
+    addDocs(null, "dev", newDoc("P2", "K2", "Apache"));
+    addDocs("john", "dev", newDoc("P3", "K3", "apachee"));
+    addDocs(null, ANYONE, newDoc("P4", "K4", "N4"));
+    // Current user is not able to see following projects
+    addDocs(null, "another group", newDoc("P5", "K5", "N5"));
+    addDocs("another user", null, newDoc("P6", "K6", "N6"));
+    addDocs((String) null, null, newDoc("P7", "K7", "N7"));
+
+    List<String> result = underTest.search(new ProjectMeasuresQuery(), new SearchOptions()).getIds();
+
+    assertThat(result).containsOnly("P1", "P2", "P3", "P4");
+  }
+
   private void addDocs(ProjectMeasuresDoc... docs) {
+    addDocs(null, ANYONE, docs);
+  }
+
+  private void addDocs(@Nullable String authorizeUser, @Nullable String authorizedGroup, ProjectMeasuresDoc... docs) {
     try {
       es.putDocuments(INDEX_PROJECT_MEASURES, TYPE_PROJECT_MEASURES, docs);
+      for (ProjectMeasuresDoc doc : docs) {
+        authorizationIndexerTester.insertProjectAuthorization(doc.getId(),
+          authorizedGroup != null ? singletonList(authorizedGroup) : Collections.emptyList(),
+          authorizeUser != null ? singletonList(authorizeUser) : Collections.emptyList());
+      }
     } catch (Exception e) {
       Throwables.propagate(e);
     }
