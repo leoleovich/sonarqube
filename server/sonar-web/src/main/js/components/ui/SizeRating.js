@@ -18,7 +18,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import React from 'react';
-import { match, when } from 'match-when';
+import inRange from 'lodash/inRange';
 import './SizeRating.css';
 
 export default class SizeRating extends React.Component {
@@ -27,19 +27,26 @@ export default class SizeRating extends React.Component {
   };
 
   render () {
-    if (this.props.value == null) {
+    const { value } = this.props;
+
+    if (value == null) {
       return (
           <div className="size-rating size-rating-muted">&nbsp;</div>
       );
     }
 
-    const letter = match({
-      [when.range(0, 999)]: 'XS',
-      [when.range(1000, 9999)]: 'S',
-      [when.range(10000, 99999)]: 'M',
-      [when.range(100000, 500000)]: 'L',
-      [when()]: 'XL'
-    })(Number(this.props.value));
+    let letter;
+    if (inRange(value, 1000)) {
+      letter = 'XS';
+    } else if (inRange(value, 1000, 10000)) {
+      letter = 'S';
+    } else if (inRange(value, 10000, 100000)) {
+      letter = 'M';
+    } else if (inRange(value, 100000, 500000)) {
+      letter = 'L';
+    } else if (value >= 500000) {
+      letter = 'XL';
+    }
 
     return (
         <div className="size-rating">{letter}</div>

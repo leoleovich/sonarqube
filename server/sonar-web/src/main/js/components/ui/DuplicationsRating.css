@@ -22,9 +22,7 @@
 }
 
 .duplications-rating-A:after {
-  width: 2px;
-  height: 2px;
-  background-color: #85bb43;
+  display: none;
 }
 
 .duplications-rating-B:after {

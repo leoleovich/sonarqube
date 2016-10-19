@@ -18,7 +18,8 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import React from 'react';
-import { match, when } from 'match-when';
+import classNames from 'classnames';
+import inRange from 'lodash/inRange';
 import './DuplicationsRating.css';
 
 export default class DuplicationsRating extends React.Component {
@@ -27,16 +28,17 @@ export default class DuplicationsRating extends React.Component {
   };
 
   render () {
-    const className = match({
-      [when.range(0, 3)]: 'duplications-rating-A',
-      [when.range(3, 5)]: 'duplications-rating-B',
-      [when.range(5, 10)]: 'duplications-rating-C',
-      [when.range(10, 20)]: 'duplications-rating-D',
-      [when()]: 'duplications-rating-E'
-    })(Number(this.props.value));
+    const { value } = this.props;
+    const className = classNames('duplications-rating', {
+      'duplications-rating-A': inRange(value, 3),
+      'duplications-rating-B': inRange(value, 3, 5),
+      'duplications-rating-C': inRange(value, 5, 10),
+      'duplications-rating-D': inRange(value, 10, 20),
+      'duplications-rating-E': value >= 20
+    });
 
     return (
-        <div className={'duplications-rating ' + className}/>
+        <div className={className}/>
     );
   }
 }
